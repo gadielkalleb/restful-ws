@@ -4,10 +4,12 @@ const categories = deps => {
     all: () => {
       // nao posso esquecer de retorna essa nova promise
       return new Promise((resolve, reject) => {
-        const { connection } = deps
+        const { connection, errorHandler } = deps
+
         connection.query('SELECT * FROM categories', (error, results) => {
           if (error) {
-            reject(error)
+            errorHandler(error, 'Falha ao listar as categorias', reject)
+            return false
           }
           resolve({ categories: results })
         })
