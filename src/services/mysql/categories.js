@@ -33,11 +33,11 @@ const categories = deps => {
         const { connection, errorHandler } = deps
         // metodo query tem essa propriedade [] um array que faz parte da biblioteca mysql para node evita sql injection
         connection.query('UPDATE categories SET name = ? WHERE id = ?', [name, id], (error, results) => {
-          if (error) {
+          if (error || !results.affectedRows) {
             errorHandler(error, `Falha ao atualizar a categoria ${name}`, reject)
             return false
           }
-          resolve({ category: { name, id: results.insertId } })
+          resolve({ category: { name, id }, affectedRows: results.affectedRows })
         })
       })
     },
@@ -50,7 +50,7 @@ const categories = deps => {
             errorHandler(error, `Falha ao remover a categoria de id ${id}`, reject)
             return false
           }
-          resolve({ message: 'categoria removida com sucesso' })
+          resolve({ message: 'categoria removida com sucesso!', affectedRows: results.affectedRows })
         })
       })
     }
