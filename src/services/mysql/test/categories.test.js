@@ -1,14 +1,19 @@
 const test = require('ava')
-
 const { connection, errorHandler } = require('./setup')
 const categories = require('../categories')({connection, errorHandler})
-
 // isolo o metodo create para usar ele isoladamente
 const create = () => categories.save('category-test')
 
 // limpa a tabela antes e dois do teste
 test.beforeEach(t => connection.query('TRUNCATE TABLE categories'))
 test.after.always(t => connection.query('TRUNCATE TABLE categories'))
+
+test('Lista de categories', async t => {
+  await create()
+  const list = await categories.all()
+  t.is(list.categories.length, 1)
+  t.is(list.categories[0].name, 'category-test')
+})
 
 // salva um elemento dentro da tabela de testes
 test('Criação de categories', async t => {
