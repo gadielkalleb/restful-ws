@@ -1,4 +1,5 @@
 import test from 'ava'
+require('dotenv').config()
 
 const mysqlServer = require('mysql')
 
@@ -16,7 +17,7 @@ const errorHandler = (error, msg, rejectFunction) => {
 
 const categories = require('../categories')({connection, errorHandler})
 
-test('Criação de categories', t => {
-  const category = categories.save('category-test')
-  console.log(category)
+test('Criação de categories', async t => {
+  const results = await categories.save('category-test')
+  t.is(results.category.name, 'category-test')
 })
