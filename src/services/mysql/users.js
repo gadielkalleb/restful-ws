@@ -1,3 +1,4 @@
+const sha1 = require('sha1')
 // deps é uma dependencia de connection que vem como parametro de de services/mysql/index.js
 const users = deps => {
   return {
@@ -19,7 +20,7 @@ const users = deps => {
       return new Promise((resolve, reject) => {
         const { connection, errorHandler } = deps
         // metodo query tem essa propriedade [] um array que faz parte da biblioteca mysql para node evita sql injection
-        connection.query('INSERT INTO users (email, password) VALUES (?, ?)', [email, password], (error, results) => {
+        connection.query('INSERT INTO users (email, password) VALUES (?, ?)', [email, sha1(password)], (error, results) => {
           if (error) {
             errorHandler(error, `Falha ao listar o usuario ${email}`, reject)
             return false
@@ -32,7 +33,7 @@ const users = deps => {
       return new Promise((resolve, reject) => {
         const { connection, errorHandler } = deps
         // metodo query tem essa propriedade [] um array que faz parte da biblioteca mysql para node evita sql injection
-        connection.query('UPDATE users SET password = ? WHERE id = ?', [password, id], (error, results) => {
+        connection.query('UPDATE users SET password = ? WHERE id = ?', [sha1(password), id], (error, results) => {
           if (error || !results.affectedRows) {
             errorHandler(error, `Falha ao atualizar o usuario de id ${id}`, reject)
             return false
